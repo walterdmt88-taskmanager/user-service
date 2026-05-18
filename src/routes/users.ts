@@ -61,4 +61,22 @@ router.post('/', async (req: Request, res: Response): Promise<void> => {
   }
 });
 
+router.get('/', async (req: Request, res: Response): Promise<void> => {
+  const requesterId = req.headers['x-user-id'];
+  if (!requesterId) {
+    res.status(401).json({ error: 'Missing X-User-Id header' });
+    return;
+  }
+
+  try {
+    const result = await pool.query(
+      `SELECT id, email, full_name, role, created_at FROM users ORDER BY created_at ASC`
+    );
+    res.json({ users: result.rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 export default router;
