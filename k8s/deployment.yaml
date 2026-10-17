@@ -18,7 +18,7 @@ spec:
         - name: ghcr-pull-secret
       containers:
         - name: user-service
-          image: ghcr.io/proops2026-taskmanager/user-service:latest
+          image: ghcr.io/walterdmt88-taskmanager/user-service:latest
           ports:
             - containerPort: 3001
           env:

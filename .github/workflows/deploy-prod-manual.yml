@@ -9,11 +9,11 @@ on:
 
 jobs:
   deploy:
-    uses: proops2026-taskmanager/proops2026-cicd-platform/.github/workflows/reusable-deploy.yml@v3   
+    uses: walterdmt88-taskmanager/proops2026-cicd-platform/.github/workflows/reusable-deploy.yml@v3   
     with:
       image-tag: ${{ inputs.image-tag }}
       environment: prod  # required reviewers on this GitHub Environment pause the run for approval
-      project-name: "proops2026-taskmanager"
+      project-name: "walterdmt88-taskmanager"
       service-name: "user-service"
       secret-name: "user-svc-secret"
       secret-literals: >-
