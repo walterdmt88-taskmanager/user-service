@@ -13,9 +13,9 @@ permissions:
 
 jobs:
   build:
-    uses: proops2026-taskmanager/proops2026-cicd-platform/.github/workflows/reusable-build.yml@v3.1
+    uses: walterdmt88-taskmanager/proops2026-cicd-platform/.github/workflows/reusable-build.yml@v3.2
     with:
-      project-name: "proops2026-taskmanager"
+      project-name: "walterdmt88-taskmanager"
       service-name: "user-service"
       db-name: "users_test_db"
       service-port: "3001"
@@ -27,11 +27,11 @@ jobs:
 
   deploy-dev:
     needs: build
-    uses: proops2026-taskmanager/proops2026-cicd-platform/.github/workflows/reusable-deploy.yml@v3
+    uses: walterdmt88-taskmanager/proops2026-cicd-platform/.github/workflows/reusable-deploy.yml@v3
     with:
       image-tag: ${{ needs.build.outputs.image-tag }}
       environment: dev
-      project-name: "proops2026-taskmanager"
+      project-name: "walterdmt88-taskmanager"
       service-name: "user-service"
       secret-name: "user-svc-secret"
       secret-literals: >-
@@ -42,11 +42,11 @@ jobs:
 
   deploy-staging:
     needs: [build, deploy-dev]   # gated by dev — same image-tag, no rebuild
-    uses: proops2026-taskmanager/proops2026-cicd-platform/.github/workflows/reusable-deploy.yml@v3
+    uses: walterdmt88-taskmanager/proops2026-cicd-platform/.github/workflows/reusable-deploy.yml@v3
     with:
       image-tag: ${{ needs.build.outputs.image-tag }}
       environment: staging
-      project-name: "proops2026-taskmanager"
+      project-name: "walterdmt88-taskmanager"
       service-name: "user-service"
       secret-name: "user-svc-secret"
       secret-literals: >-
@@ -57,11 +57,11 @@ jobs:
 
   deploy-prod:
     needs: [build, deploy-staging]   # gated by staging — same image-tag, no rebuild
-    uses: proops2026-taskmanager/proops2026-cicd-platform/.github/workflows/reusable-deploy.yml@v3
+    uses: walterdmt88-taskmanager/proops2026-cicd-platform/.github/workflows/reusable-deploy.yml@v3
     with:
       image-tag: ${{ needs.build.outputs.image-tag }}
       environment: prod   # required reviewers on this GitHub Environment pause the run for approval
-      project-name: "proops2026-taskmanager"
+      project-name: "walterdmt88-taskmanager"
       service-name: "user-service"
       secret-name: "user-svc-secret"
       secret-literals: >-
