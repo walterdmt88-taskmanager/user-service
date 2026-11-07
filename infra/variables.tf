@@ -54,3 +54,9 @@ variable "owner" {
   description = "Owner of the resources (tag)"
   type        = string
 }
+
+variable "deploy_environments" {
+  description = "GitHub Environments whose deploy jobs may pull images from ECR"
+  type        = list(string)
+  default     = ["dev", "staging", "prod"]
+}
