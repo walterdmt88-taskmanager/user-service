@@ -67,7 +67,7 @@ module "ci_role" {
 
   purpose           = "${var.service}-ci"
   oidc_provider_arn = data.terraform_remote_state.github_oidc.outputs.provider_arn
-  allowed_subjects  = ["repo:${var.github_repository}:ref:refs/heads/${var.ci_branch}"]
+  allowed_subjects  = ["${var.github_subject_prefix}:ref:refs/heads/${var.ci_branch}"]
   policy_json       = data.aws_iam_policy_document.ecr_push.json
 }
 
@@ -105,6 +105,6 @@ module "deploy_role" {
 
   purpose           = "${var.service}-deploy"
   oidc_provider_arn = data.terraform_remote_state.github_oidc.outputs.provider_arn
-  allowed_subjects  = [for env in var.deploy_environments : "repo:${var.github_repository}:environment:${env}"]
+  allowed_subjects  = [for env in var.deploy_environments : "${var.github_subject_prefix}:environment:${env}"]
   policy_json       = data.aws_iam_policy_document.ecr_pull.json
 }

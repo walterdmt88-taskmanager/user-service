@@ -29,8 +29,13 @@ variable "region_code" {
   type        = string
 }
 
-variable "github_repository" {
-  description = "GitHub <org>/<repo> allowed to assume the CI role"
+variable "github_subject_prefix" {
+  description = <<-EOT
+    Prefix of this repo's GitHub OIDC `sub` claim. The repo uses immutable subjects, so it carries
+    the numeric owner and repo IDs, e.g. repo:<org>@<org-id>/<repo>@<repo-id>. Read it from:
+      gh api repos/<org>/<repo>/actions/oidc/customization/sub --jq .sub_claim_prefix
+    A trust policy written with plain names never matches and AWS answers AccessDenied.
+  EOT
   type        = string
 }
 
