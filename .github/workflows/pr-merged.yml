@@ -6,66 +6,68 @@ on:
       - 'iac/**'
       - '**/Jenkinsfile'
 
+# Caps what the reusable workflows may request. id-token lets jobs exchange a GitHub OIDC token
+# for short-lived AWS credentials (no stored keys); packages is gone with GHCR.
 permissions:
   contents: read
-  packages: write
+  id-token: write
   security-events: write
 
 jobs:
   build:
-    uses: walterdmt88-taskmanager/proops2026-cicd-platform/.github/workflows/reusable-build.yml@v3.2
+    uses: walterdmt88-taskmanager/proops2026-cicd-platform/.github/workflows/reusable-build.yml@v4.0.0
     with:
-      project-name: "walterdmt88-taskmanager"
       service-name: "user-service"
+      ecr-repository: "taskmanager/user-service"
+      aws-role-arn: ${{ vars.AWS_CI_ROLE_ARN }}
+      aws-region: "ap-southeast-1"
       db-name: "users_test_db"
       service-port: "3001"
       extra-env: |
         JWT_SECRET=test_secret_minimum_32_characters_long
         JWT_EXPIRES_IN=24h
-    secrets:
-      GHCR_PAT: ${{ secrets.GHCR_PAT }}
 
   deploy-dev:
     needs: build
-    uses: walterdmt88-taskmanager/proops2026-cicd-platform/.github/workflows/reusable-deploy.yml@v3
+    uses: walterdmt88-taskmanager/proops2026-cicd-platform/.github/workflows/reusable-deploy.yml@v4.0.0
     with:
       image-tag: ${{ needs.build.outputs.image-tag }}
       environment: dev
-      project-name: "walterdmt88-taskmanager"
       service-name: "user-service"
+      ecr-repository: "taskmanager/user-service"
+      aws-role-arn: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+      aws-region: "ap-southeast-1"
       secret-name: "user-svc-secret"
       secret-literals: >-
         --from-literal=DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy
         --from-literal=JWT_SECRET=ci-stub-secret-minimum-32-chars-long
-    secrets:
-      GHCR_PAT: ${{ secrets.GHCR_PAT }}
 
   deploy-staging:
     needs: [build, deploy-dev]   # gated by dev — same image-tag, no rebuild
-    uses: walterdmt88-taskmanager/proops2026-cicd-platform/.github/workflows/reusable-deploy.yml@v3
+    uses: walterdmt88-taskmanager/proops2026-cicd-platform/.github/workflows/reusable-deploy.yml@v4.0.0
     with:
       image-tag: ${{ needs.build.outputs.image-tag }}
       environment: staging
-      project-name: "walterdmt88-taskmanager"
       service-name: "user-service"
+      ecr-repository: "taskmanager/user-service"
+      aws-role-arn: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+      aws-region: "ap-southeast-1"
       secret-name: "user-svc-secret"
       secret-literals: >-
         --from-literal=DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy
         --from-literal=JWT_SECRET=ci-stub-secret-minimum-32-chars-long
-    secrets:
-      GHCR_PAT: ${{ secrets.GHCR_PAT }}
 
   deploy-prod:
     needs: [build, deploy-staging]   # gated by staging — same image-tag, no rebuild
-    uses: walterdmt88-taskmanager/proops2026-cicd-platform/.github/workflows/reusable-deploy.yml@v3
+    uses: walterdmt88-taskmanager/proops2026-cicd-platform/.github/workflows/reusable-deploy.yml@v4.0.0
     with:
       image-tag: ${{ needs.build.outputs.image-tag }}
       environment: prod   # required reviewers on this GitHub Environment pause the run for approval
-      project-name: "walterdmt88-taskmanager"
       service-name: "user-service"
+      ecr-repository: "taskmanager/user-service"
+      aws-role-arn: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+      aws-region: "ap-southeast-1"
       secret-name: "user-svc-secret"
       secret-literals: >-
         --from-literal=DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy
         --from-literal=JWT_SECRET=ci-stub-secret-minimum-32-chars-long
-    secrets:
-      GHCR_PAT: ${{ secrets.GHCR_PAT }}

@@ -15,10 +15,11 @@ spec:
         app: user-service
     spec:
       imagePullSecrets:
-        - name: ghcr-pull-secret
+        - name: registry-pull-secret   # created by reusable-deploy; same name whatever the registry
       containers:
         - name: user-service
-          image: ghcr.io/walterdmt88-taskmanager/user-service:latest
+          # Placeholder only: CI replaces it with <registry>/<repo>:<commit-sha> via `kubectl set image`.
+          image: taskmanager/user-service:set-by-ci
           ports:
             - containerPort: 3001
           env:
