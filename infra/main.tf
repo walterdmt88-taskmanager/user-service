@@ -50,6 +50,7 @@ data "aws_iam_policy_document" "ecr_push" {
       "ecr:CompleteLayerUpload",
       "ecr:PutImage",
       "ecr:DescribeImages", # lets CI check whether a tag already exists before pushing
+      "ecr:BatchGetImage",  # docker push HEADs the manifest before writing it; without this: 403 on HEAD
     ]
     resources = [module.ecr.arn]
   }
