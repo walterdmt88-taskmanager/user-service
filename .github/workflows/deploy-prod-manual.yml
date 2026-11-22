@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   deploy:
-    uses: walterdmt88-taskmanager/proops2026-cicd-platform/.github/workflows/reusable-deploy.yml@v4.0.0
+    uses: walterdmt88-taskmanager/proops2026-cicd-platform/.github/workflows/reusable-deploy.yml@v4.0.1
     with:
       image-tag: ${{ inputs.image-tag }}
       environment: prod  # required reviewers on this GitHub Environment pause the run for approval
