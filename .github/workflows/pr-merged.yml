@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   build:
-    uses: walterdmt88-taskmanager/proops2026-cicd-platform/.github/workflows/reusable-build.yml@v4.0.0
+    uses: walterdmt88-taskmanager/proops2026-cicd-platform/.github/workflows/reusable-build.yml@v4.0.1
     with:
       service-name: "user-service"
       ecr-repository: "taskmanager/user-service"
@@ -30,7 +30,7 @@ jobs:
 
   deploy-dev:
     needs: build
-    uses: walterdmt88-taskmanager/proops2026-cicd-platform/.github/workflows/reusable-deploy.yml@v4.0.0
+    uses: walterdmt88-taskmanager/proops2026-cicd-platform/.github/workflows/reusable-deploy.yml@v4.0.1
     with:
       image-tag: ${{ needs.build.outputs.image-tag }}
       environment: dev
@@ -45,7 +45,7 @@ jobs:
 
   deploy-staging:
     needs: [build, deploy-dev]   # gated by dev — same image-tag, no rebuild
-    uses: walterdmt88-taskmanager/proops2026-cicd-platform/.github/workflows/reusable-deploy.yml@v4.0.0
+    uses: walterdmt88-taskmanager/proops2026-cicd-platform/.github/workflows/reusable-deploy.yml@v4.0.1
     with:
       image-tag: ${{ needs.build.outputs.image-tag }}
       environment: staging
@@ -60,7 +60,7 @@ jobs:
 
   deploy-prod:
     needs: [build, deploy-staging]   # gated by staging — same image-tag, no rebuild
-    uses: walterdmt88-taskmanager/proops2026-cicd-platform/.github/workflows/reusable-deploy.yml@v4.0.0
+    uses: walterdmt88-taskmanager/proops2026-cicd-platform/.github/workflows/reusable-deploy.yml@v4.0.1
     with:
       image-tag: ${{ needs.build.outputs.image-tag }}
       environment: prod   # required reviewers on this GitHub Environment pause the run for approval
